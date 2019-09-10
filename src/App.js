@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
+import List from './List';
+import ItemForm from './ItemForm';
 import './App.css';
 
 class App extends React.Component {
@@ -11,21 +12,34 @@ class App extends React.Component {
     ]
   };
 
-  renderListItems = () => {
+  addItem = (name) => {
+    const { grocery_items } = this.state;
+    const grocery_item = {name, id: this.state.grocery_items.length+1, complete: false};
+    this.setState({ grocery_items: [grocery_item, ...grocery_items]});
+  }
+
+  handleClick = (id) => {
     const {grocery_items} = this.state;
-    return grocery_items.map(
-      item => <li key={item.id}>{item.name}</li>
-    )
-  };
+    this.setState({
+      grocery_items: grocery_items.map( grocery_item => {
+        if (grocery_item.id === id) {
+          return {...grocery_item, complete: !grocery_item.complete};
+        }
+        return grocery_item;
+      })
+    })
+  }
 
   render() {
-    return (
-      <div>
-        <ul>
-          {this.renderListItems()}
-        </ul>
-      </div>
-    );
+
+  const { grocery_items } = this.state;
+
+  return (
+    <div>
+      <ItemForm addItem={this.addItem} />
+      <List name="Grocery List" items={grocery_items} itemClick={this.handleClick}/>
+    </div>
+  )
   }
 }
 
